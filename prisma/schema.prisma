@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+//=========================================CONFIGURATION=========================================
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+// url      = "prisma+postgres://localhost:51213/?api_key=eyJkYXRhYmFzZVVybCI6InBvc3RncmVzOi8vcG9zdGdyZXM6cG9zdGdyZXNAbG9jYWxob3N0OjUxMjE0L3RlbXBsYXRlMT9zc2xtb2RlPWRpc2FibGUmY29ubmVjdGlvbl9saW1pdD0xJmNvbm5lY3RfdGltZW91dD0wJm1heF9pZGxlX2Nvbm5lY3Rpb25fbGlmZXRpbWU9MCZwb29sX3RpbWVvdXQ9MCZzaW5nbGVfdXNlX2Nvbm5lY3Rpb25zPXRydWUmc29ja2V0X3RpbWVvdXQ9MCIsIm5hbWUiOiJkZWZhdWx0Iiwic2hhZG93RGF0YWJhc2VVcmwiOiJwb3N0Z3JlczovL3Bvc3RncmVzOnBvc3RncmVzQGxvY2FsaG9zdDo1MTIxNS90ZW1wbGF0ZTE_c3NsbW9kZT1kaXNhYmxlJmNvbm5lY3Rpb25fbGltaXQ9MSZjb25uZWN0X3RpbWVvdXQ9MCZtYXhfaWRsZV9jb25uZWN0aW9uX2xpZmV0aW1lPTAmcG9vbF90aW1lb3V0PTAmc2luZ2xlX3VzZV9jb25uZWN0aW9ucz10cnVlJnNvY2tldF90aW1lb3V0PTAifQ"
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+//=========================================ENUMS==========================================
+//=========================================USERTYPE ENUM==========================================
+// enum UserType {
+//   ADMIN
+//   CUSTOMER
+//   SELLER
+// }
+
+//===========================================MODELS=============================================
+//=========================================USER MODEL==========================================
+// model User { 
+//   id         Int      @id @default(autoincrement()) 
+//   name       String 
+//   lastName   String
+//   email      String   @unique
+//   password   String
+//   phoneNumber String  @unique
+//   createdAt  DateTime @default(now())
+//   updatedAt  DateTime @updatedAt
+
+//   // Relación con User_UserType
+//   userTypes User_UserType[]
+// }
+
+// model UserType {
+//   id          Int      @id @default(autoincrement())
+//   name        String   @unique
+//   description String
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   // Relación con User_UserType
+//   users User_UserType[]
+// }
+
+// model User_UserType {
+//   id         Int      @id @default(autoincrement())
+//   userId     Int
+//   userTypeId Int
+//   assignedAt DateTime @default(now())
+
+//   // Relaciones
+//   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   userType UserType @relation(fields: [userTypeId], references: [id], onDelete: Cascade)
+
+//   // Para que no se repita la misma relación
+//   @@unique([userId, userTypeId])
+// }
+
+model User {
+  id          Int       @id @default(autoincrement())
+  name        String
+  lastName    String
+  email       String    @unique
+  password    String
+  phoneNumber String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userTypeId  Int?
+  status      Boolean   @default(true)
+
+  userType    UserType?  @relation(fields: [userTypeId], references: [id], onDelete: Cascade)//Se usa este campo para definir la relación con UserType
+}
+
+model UserType {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  status      Boolean  @default(true)
+
+  users       User[]   // Relación uno a muchos con User
+}
+
+
